@@ -8,37 +8,37 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-/* ───────── RESET ───────── */
+/* ───── RESET ───── */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;scrollbar-width:thin;}
 :root{--radius:6px;--font:'Inter',sans-serif;--display:'Playfair Display',serif}
-/* ───────── DARK THEME ───────── */
+
+/* ───── DARK ───── */
 [data-theme="dark"]{
   --bg:#0a0a0a;--bg2:#111111;--surface:#181818;--border:#222222;
   --text:#f0f0f0;--muted:#888888;--dim:#444444;--accent:#ffffff;
 }
-/* ───────── LIGHT THEME ───────── */
+
+/* ───── LIGHT ───── */
 [data-theme="light"]{
-  --bg:#f8f8f6;--bg2:#eeeeec;--surface:#ffffff;--border:#e0e0dc;
-  --text:#1a1a1a;--muted:#888886;--dim:#bbbbb9;--accent:#000000;
+  --bg:#f8f8f6;--bg2:#eeeeec;--surface:#ffffff;--border:#d8d8d6;
+  --text:#1a1a1a;--muted:#888886;--dim:#aaaaaa;--accent:#000000;
 }
-/* ───────── BASE ───────── */
+
 body{
-  font-family:var(--font);
-  background:var(--bg);
-  color:var(--text);
-  line-height:1.65;
-  overflow-x:hidden;
-  transition:background .4s ease,color .4s ease;
+  font-family:var(--font);background:var(--bg);color:var(--text);
+  line-height:1.65;overflow-x:hidden;transition:background .4s ease,color .4s ease;
   -webkit-font-smoothing:antialiased;
 }
-/* ───────── GRAIN OVERLAY ───────── */
+
+/* ───── GRAIN ───── */
 body::after{
   content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;
-  opacity:.025;
+  opacity:.015;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-/* ───────── CUSTOM CURSOR ───────── */
+
+/* ───── CURSOR ───── */
 .cursor-dot,.cursor-ring{
   position:fixed;pointer-events:none;z-index:10000;
   border-radius:50%;transform:translate(-50%,-50%);
@@ -51,25 +51,26 @@ body::after{
 }
 .cursor-ring.hover{width:48px;height:48px;border-color:var(--accent);background:rgba(255,255,255,.03);}
 @media(hover:none){.cursor-dot,.cursor-ring{display:none!important;}}
-/* ───────── THEME TOGGLE ───────── */
+
+/* ───── THEME ───── */
 .theme-toggle{
   position:fixed;bottom:28px;right:28px;z-index:999;
   width:42px;height:42px;border-radius:50%;
   background:var(--surface);border:1px solid var(--border);
   color:var(--text);cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  transition:all .3s;font-size:1.1rem;
-  backdrop-filter:blur(8px);
+  transition:all .3s;font-size:1.1rem;backdrop-filter:blur(8px);
 }
 .theme-toggle:hover{border-color:var(--accent);transform:scale(1.1);}
-/* ───────── NAV ───────── */
+
+/* ───── NAV ───── */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:900;
   padding:0 36px;height:64px;
   display:flex;align-items:center;justify-content:space-between;
   transition:background .4s;
 }
-nav.scrolled{background:rgba(10,10,10,.75);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);}
+nav.scrolled{background:rgba(10,10,10,.75);backdrop-filter:blur(24px);}
 [data-theme="light"] nav.scrolled{background:rgba(248,248,246,.8);}
 .nav-logo{
   font-weight:600;font-size:.85rem;letter-spacing:1px;text-transform:uppercase;
@@ -83,19 +84,36 @@ nav.scrolled{background:rgba(10,10,10,.75);backdrop-filter:blur(24px);-webkit-ba
 .nav-right{display:flex;align-items:center;gap:2px;}
 .nav-right a{
   text-decoration:none;color:var(--muted);font-size:.8rem;font-weight:500;
-  padding:6px 16px;border-radius:var(--radius);
-  transition:all .2s;position:relative;
+  padding:6px 16px;border-radius:var(--radius);transition:all .2s;
 }
 .nav-right a:hover{color:var(--text);background:rgba(136,136,136,.06);}
-.nav-index{font-size:.65rem;color:var(--dim);margin-right:12px;letter-spacing:1px;}
-/* ───────── HERO ───────── */
+.nav-index{font-size:.65rem;color:var(--dim);margin-right:12px;letter-spacing:1px;font-variant-numeric:tabular-nums;}
+
+/* ───── HERO ───── */
 .hero{
   min-height:100vh;display:flex;align-items:center;
-  padding:120px 36px 60px;position:relative;
+  padding:120px 36px 60px;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;z-index:0;
+  background:var(--bg2);
+  mask-image:radial-gradient(ellipse 60% 60% at 80% 50%,black,transparent);
+  -webkit-mask-image:radial-gradient(ellipse 60% 60% at 80% 50%,black,transparent);
+}
+.hero-mesh{
+  position:absolute;right:-10%;top:-10%;width:70%;height:120%;z-index:0;
+  opacity:.6;overflow:hidden;
+}
+.hero-mesh img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  filter:grayscale(1) contrast(1.3) brightness(.7);
+  mix-blend-mode:luminosity;
+  mask-image:linear-gradient(to left,black 30%,transparent 70%);
+  -webkit-mask-image:linear-gradient(to left,black 30%,transparent 70%);
 }
 .hero-grid{
   display:grid;grid-template-columns:1.4fr 1fr;gap:60px;
-  max-width:1150px;margin:0 auto;width:100%;align-items:center;
+  max-width:1150px;margin:0 auto;width:100%;align-items:center;position:relative;z-index:1;
 }
 .hero-tag{
   font-size:.75rem;letter-spacing:2.5px;text-transform:uppercase;
@@ -108,30 +126,27 @@ nav.scrolled{background:rgba(10,10,10,.75);backdrop-filter:blur(24px);-webkit-ba
   letter-spacing:-1.5px;margin-bottom:20px;
 }
 .hero h1 .line{display:block;overflow:hidden;}
-.hero h1 .line span{display:block;transform:translateY(110%);animation:revealUp .8s .1s forwards;}
+.hero h1 .line span{display:block;transform:translateY(110%);animation:up .8s .1s forwards;}
 .hero h1 .line:nth-child(2) span{animation-delay:.25s;}
 .hero h1 .line:nth-child(3) span{animation-delay:.4s;}
-@keyframes revealUp{to{transform:translateY(0)}}
+@keyframes up{to{transform:translateY(0)}}
 .hero-desc{
   font-size:.95rem;color:var(--muted);max-width:440px;
   line-height:1.7;margin-bottom:36px;
-  opacity:0;animation:fadeIn .6s .5s forwards;
+  opacity:0;animation:fi .6s .5s forwards;
 }
-@keyframes fadeIn{to{opacity:1}}
+@keyframes fi{to{opacity:1}}
 .hero-actions{
   display:flex;gap:12px;flex-wrap:wrap;
-  opacity:0;animation:fadeIn .6s .7s forwards;
+  opacity:0;animation:fi .6s .7s forwards;
 }
 .btn{
   display:inline-flex;align-items:center;gap:8px;
   padding:12px 28px;border-radius:var(--radius);
   font-weight:500;font-size:.85rem;text-decoration:none;
   transition:all .25s;font-family:inherit;border:none;cursor:pointer;
-  position:relative;
 }
-.btn-primary{
-  background:var(--text);color:var(--bg);
-}
+.btn-primary{background:var(--text);color:var(--bg);}
 .btn-primary:hover{opacity:.85;transform:translateY(-1px);}
 .btn-ghost{
   background:transparent;border:1px solid var(--border);color:var(--text);
@@ -140,40 +155,48 @@ nav.scrolled{background:rgba(10,10,10,.75);backdrop-filter:blur(24px);-webkit-ba
 .btn-ghost svg{transition:transform .25s;}
 .btn-ghost:hover svg{transform:translate(2px,-2px);}
 
-/* Hero right - image area */
-.hero-visual{position:relative;display:flex;justify-content:center;}
-.mono-frame{
-  width:280px;height:320px;
+/* ───── HERO FRAME ───── */
+.hero-visual{position:relative;display:flex;justify-content:center;align-items:center;}
+.hero-gear-frame{
+  position:relative;width:300px;height:300px;
+  display:flex;align-items:center;justify-content:center;
+}
+.hero-gear-frame .gear-ring{
+  position:absolute;width:100%;height:100%;
+  border:1px solid var(--border);border-radius:50%;
+  animation:spin 40s linear infinite;
+}
+.hero-gear-frame .gear-ring:nth-child(2){
+  width:80%;height:80%;border-color:var(--dim);
+  animation:spin 30s linear infinite reverse;
+  border-style:dashed;
+}
+.hero-gear-frame .gear-ring:nth-child(3){
+  width:55%;height:55%;border-color:var(--muted);
+  animation:spin 20s linear infinite;
+  border-width:1px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero-gear-frame img{
+  width:50%;height:50%;object-fit:cover;display:block;
+  border-radius:50%;filter:grayscale(1) contrast(1.1);
   border:1px solid var(--border);
-  border-radius:2px;overflow:hidden;
-  position:relative;
-  transition:transform .4s;
+  z-index:1;transition:transform .4s;
 }
-.mono-frame:hover{transform:scale(1.015);}
-.mono-frame img{
-  width:100%;height:100%;object-fit:cover;display:block;
-  filter:grayscale(1) contrast(1.1);
-  transition:filter .4s,transform .6s;
-}
-.mono-frame:hover img{filter:grayscale(.8) contrast(1);transform:scale(1.03);}
-.mono-frame .corner{position:absolute;width:12px;height:12px;border-color:var(--text);border-style:solid;}
-.mono-frame .corner.tl{top:8px;left:8px;border-width:1px 0 0 1px;}
-.mono-frame .corner.tr{top:8px;right:8px;border-width:1px 1px 0 0;}
-.mono-frame .corner.bl{bottom:8px;left:8px;border-width:0 0 1px 1px;}
-.mono-frame .corner.br{bottom:8px;right:8px;border-width:0 1px 1px 0;}
+.hero-gear-frame:hover img{transform:scale(1.05);}
 .hero-badge{
-  position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);
-  display:flex;gap:6px;flex-wrap:wrap;justify-content:center;
+  position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+  display:flex;gap:4px;flex-wrap:wrap;justify-content:center;white-space:nowrap;
 }
 .hero-badge span{
-  padding:4px 12px;font-size:.68rem;font-weight:500;
+  padding:3px 10px;font-size:.65rem;font-weight:500;
   background:var(--surface);border:1px solid var(--border);
-  white-space:nowrap;letter-spacing:.3px;
+  letter-spacing:.3px;
 }
 
-/* ───────── SCROLL INDICATOR ───────── */
+/* ───── SCROLL IND ───── */
 .scroll-ind{
-  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:1;
   display:flex;flex-direction:column;align-items:center;gap:6px;
 }
 .scroll-ind span{display:block;width:1px;height:40px;background:var(--dim);animation:scrollPulse 2s infinite;}
@@ -183,9 +206,27 @@ nav.scrolled{background:rgba(10,10,10,.75);backdrop-filter:blur(24px);-webkit-ba
   50%{opacity:.8;transform:scaleY(.6)}
 }
 
-/* ───────── SECTION BASE ───────── */
-section{padding:100px 36px;}
+/* ───── SECTION ───── */
+section{padding:100px 36px;position:relative;}
 section .in{max-width:1150px;margin:0 auto;}
+
+/* ───── SECTION DIVIDER ───── */
+.section-divider{
+  height:80px;overflow:hidden;position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+.section-divider img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  filter:grayscale(1) contrast(1.2);
+  opacity:.15;
+}
+.section-divider .divider-line{
+  position:absolute;left:36px;right:36px;height:1px;background:var(--border);
+}
+.section-divider .divider-dot{
+  position:absolute;width:4px;height:4px;border-radius:50%;
+  background:var(--dim);left:50%;top:50%;transform:translate(-50%,-50%);
+}
 
 .s-label{
   display:flex;align-items:center;gap:16px;
@@ -193,7 +234,6 @@ section .in{max-width:1150px;margin:0 auto;}
   color:var(--dim);font-weight:500;margin-bottom:48px;
 }
 .s-label::after{content:'';flex:1;height:1px;background:var(--border);}
-
 .s-title{
   font-family:var(--display);
   font-size:clamp(2rem,3.5vw,3.2rem);
@@ -201,61 +241,61 @@ section .in{max-width:1150px;margin:0 auto;}
   letter-spacing:-1px;margin-bottom:16px;
 }
 
-/* ───────── WORK ───────── */
+/* ───── WORK ───── */
 .work-list{display:flex;flex-direction:column;border-top:1px solid var(--border);}
 .work-item{
-  display:grid;grid-template-columns:1.2fr 1fr 100px;
-  gap:24px;padding:32px 0;
+  display:grid;grid-template-columns:120px 1fr 120px;
+  gap:24px;padding:28px 0;
   border-bottom:1px solid var(--border);
   text-decoration:none;color:inherit;
   cursor:pointer;position:relative;
-  transition:all .3s;
+  transition:all .3s;align-items:center;
 }
 .work-item:hover{opacity:.7;}
-.work-item:nth-child(1){transition-delay:0s;}
-.work-item:nth-child(2){transition-delay:.05s;}
-.work-item:nth-child(3){transition-delay:.1s;}
-.work-item .wi-year{font-size:.8rem;color:var(--dim);font-weight:500;letter-spacing:.5px;}
+.work .wi-vis{
+  width:80px;height:60px;overflow:hidden;border-radius:2px;
+  border:1px solid var(--border);opacity:.6;flex-shrink:0;
+  transition:opacity .3s;
+}
+.work-item:hover .wi-vis{opacity:1;}
+.work .wi-vis img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  filter:grayscale(1) contrast(1.2);
+}
+.work-item .wi-year{font-size:.75rem;color:var(--dim);font-weight:500;letter-spacing:.5px;white-space:nowrap;}
 .work-item .wi-title{font-weight:600;font-size:.95rem;}
 .work-item .wi-company{font-size:.8rem;color:var(--muted);margin-top:2px;}
 .work-item .wi-desc{font-size:.85rem;color:var(--muted);line-height:1.6;}
 .work-item .wi-tags{display:flex;gap:4px;margin-top:8px;}
 .work-item .wi-tags span{
   font-size:.65rem;padding:2px 8px;border-radius:2px;
-  background:var(--surface);border:1px solid var(--border);
-  color:var(--muted);
+  background:var(--surface);border:1px solid var(--border);color:var(--muted);
 }
-.work-item .wi-arrow{
-  display:flex;align-items:flex-start;justify-content:flex-end;
-  font-size:1.2rem;color:var(--dim);padding-top:2px;
-  transition:transform .3s,color .3s;
-}
+.work-item .wi-arrow{display:flex;align-items:center;justify-content:flex-end;font-size:1.2rem;color:var(--dim);transition:transform .3s,color .3s;}
 .work-item:hover .wi-arrow{transform:translate(4px,-4px);color:var(--text);}
 
-/* ───────── ABOUT ───────── */
-.about-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:60px;
-}
+/* ───── ABOUT ───── */
+.about-layout{display:grid;grid-template-columns:1.2fr 1fr;gap:50px;align-items:start;}
 .about-text p{
   font-size:.92rem;color:var(--muted);line-height:1.7;margin-bottom:16px;
 }
-.about-quote{
+.quote-block{
   padding:24px 0 24px 28px;
   border-left:2px solid var(--dim);
   font-family:var(--display);font-style:italic;
-  font-size:1.1rem;color:var(--text);
+  font-size:1.05rem;color:var(--text);
   margin:24px 0;line-height:1.6;
 }
-.about-vis{
-  position:relative;
-}
-.about-vis img{
-  width:100%;border-radius:2px;display:block;
-  filter:grayscale(1) contrast(1.05);
+.about-image-wrap{
+  position:relative;overflow:hidden;border-radius:2px;
   border:1px solid var(--border);
+}
+.about-image-wrap img{
+  width:100%;display:block;
+  filter:grayscale(1) contrast(1.1);
   transition:filter .4s,transform .6s;
 }
-.about-vis:hover img{filter:grayscale(.7);}
+.about-image-wrap:hover img{filter:grayscale(.7);transform:scale(1.02);}
 .about-stats{
   display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
   margin-top:20px;background:var(--border);
@@ -263,16 +303,15 @@ section .in{max-width:1150px;margin:0 auto;}
 .about-stat{
   background:var(--bg);padding:16px;text-align:center;
 }
-.about-stat .num{font-weight:700;font-size:1.5rem;}
+.about-stat .num{font-weight:700;font-size:1.5rem;font-variant-numeric:tabular-nums;}
 .about-stat .lbl{font-size:.7rem;color:var(--muted);margin-top:2px;}
 
-/* ───────── EXPERIENCE ───────── */
+/* ───── EXP ───── */
 .exp{display:flex;flex-direction:column;gap:16px;}
 .exp-card{
   border:1px solid var(--border);border-radius:2px;
   padding:28px 32px;background:var(--bg2);
-  transition:all .3s;
-  position:relative;
+  transition:all .3s;position:relative;overflow:hidden;
 }
 .exp-card:hover{border-color:var(--dim);background:var(--surface);}
 .exp-card::before{
@@ -296,9 +335,8 @@ section .in{max-width:1150px;margin:0 auto;}
 }
 .exp-b li::before{content:'—';position:absolute;left:0;color:var(--dim);}
 
-/* ───────── SKILLS ───────── */
+/* ───── SKILLS ───── */
 .skills{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
-.skill-group{}
 .skill-group h3{font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:16px;font-weight:500;}
 .skill-items{display:flex;flex-direction:column;gap:4px;}
 .skill-item{
@@ -312,10 +350,15 @@ section .in{max-width:1150px;margin:0 auto;}
 .skill-item .bar span{display:block;height:100%;background:var(--text);width:0;transition:width .8s .2s;}
 .skill-item .bar span.fill{width:var(--pct);}
 
-/* ───────── CONTACT ───────── */
-.contact-sec{position:relative;}
+/* ───── CONTACT ───── */
+.contact-sec{position:relative;overflow:hidden;}
+.contact-sec::before{
+  content:'';position:absolute;inset:0;z-index:0;
+  opacity:.04;pointer-events:none;
+}
 .contact-grid{
   display:grid;grid-template-columns:1.2fr 1fr;gap:40px;
+  position:relative;z-index:1;
 }
 .contact-info{display:flex;flex-direction:column;gap:12px;}
 .contact-row{
@@ -347,27 +390,23 @@ section .in{max-width:1150px;margin:0 auto;}
 }
 .contact-mono .links a:hover{color:var(--text);border-color:var(--text);}
 
-/* ───────── FOOTER ───────── */
+/* ───── FOOTER ───── */
 footer{
   text-align:center;padding:60px 36px 80px;
   border-top:1px solid var(--border);
   max-width:1150px;margin:0 auto;
 }
 footer .sep{display:flex;justify-content:center;gap:24px;margin-bottom:12px;flex-wrap:wrap;}
-footer .sep a{
-  color:var(--dim);text-decoration:none;font-size:.8rem;
-  transition:color .2s;
-}
+footer .sep a{color:var(--dim);text-decoration:none;font-size:.8rem;transition:color .2s;}
 footer .sep a:hover{color:var(--text);}
 footer p{font-size:.75rem;color:var(--dim);letter-spacing:.5px;}
 footer .btt{
   display:inline-block;margin-top:20px;
-  font-size:.7rem;color:var(--dim);text-decoration:none;
-  letter-spacing:1px;transition:color .2s;
+  font-size:.7rem;color:var(--dim);text-decoration:none;letter-spacing:1px;transition:color .2s;
 }
 footer .btt:hover{color:var(--text);}
 
-/* ───────── REVEAL ANIMATIONS ───────── */
+/* ───── REVEAL ───── */
 .r{opacity:0;transform:translateY(24px);transition:all .7s cubic-bezier(.22,1,.36,1);}
 .r.v{opacity:1;transform:translateY(0);}
 .r1{transition-delay:0s;}
@@ -378,15 +417,18 @@ footer .btt:hover{color:var(--text);}
 .ri{opacity:0;transform:scale(.97);transition:all .7s cubic-bezier(.22,1,.36,1);}
 .ri.v{opacity:1;transform:scale(1);}
 
-/* ───────── RESPONSIVE ───────── */
+/* ───── RESPONSIVE ───── */
 @media(max-width:960px){
   .hero-grid{grid-template-columns:1fr;gap:40px;}
-  .hero-visual{order:-1;}
-  .about-grid{grid-template-columns:1fr;}
+  .hero-visual{order:-1;justify-content:center;}
+  .hero-mesh{right:-30%;width:90%;}
+  .hero-mesh img{mask-image:none;-webkit-mask-image:none;opacity:.3;}
+  .about-layout{grid-template-columns:1fr;}
   .skills{grid-template-columns:1fr;}
   .contact-grid{grid-template-columns:1fr;}
   .work-item{grid-template-columns:1fr;gap:8px;}
   .work-item .wi-arrow{display:none;}
+  .work .wi-vis{display:none;}
   nav{padding:0 20px;}
   section{padding:80px 20px;}
   .hero{padding:100px 20px 60px;}
@@ -397,18 +439,18 @@ footer .btt:hover{color:var(--text);}
   .nav-right a{display:none;}
   .nav-right .nav-index{display:block;}
   .nav-right a:last-child{display:block;}
-  .mono-frame{width:220px;height:260px;}
+  .hero-gear-frame{width:220px;height:220px;}
   .about-stats{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 
-<!-- Custom Cursor -->
+<!-- Cursor -->
 <div class="cursor-dot" id="cDot"></div>
 <div class="cursor-ring" id="cRing"></div>
 
-<!-- Theme Toggle -->
+<!-- Theme -->
 <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">🌙</button>
 
 <!-- Nav -->
@@ -425,6 +467,9 @@ footer .btt:hover{color:var(--text);}
 
 <!-- Hero -->
 <div class="hero">
+  <div class="hero-mesh">
+    <img src="assets-v2/hero-mechanical.png" alt="" aria-hidden="true" loading="eager">
+  </div>
   <div class="hero-grid">
     <div>
       <div class="hero-tag">Product UX Designer</div>
@@ -440,10 +485,11 @@ footer .btt:hover{color:var(--text);}
       </div>
     </div>
     <div class="hero-visual">
-      <div class="mono-frame">
-        <div class="corner tl"></div><div class="corner tr"></div>
-        <div class="corner bl"></div><div class="corner br"></div>
-        <img src="assets/about-chaos-mind.png" alt="Abstract chaos to clarity visualization" loading="eager">
+      <div class="hero-gear-frame">
+        <div class="gear-ring"></div>
+        <div class="gear-ring"></div>
+        <div class="gear-ring"></div>
+        <img src="assets-v2/about-divine-machine.png" alt="Mechanical divine design" loading="eager">
       </div>
       <div class="hero-badge">
         <span>Jakarta, ID</span>
@@ -455,6 +501,9 @@ footer .btt:hover{color:var(--text);}
   <div class="scroll-ind"><span></span><small>Scroll</small></div>
 </div>
 
+<!-- Section Divider -->
+<div class="section-divider"><img src="assets-v2/section-divider.png" alt="" aria-hidden="true"><div class="divider-line"></div><div class="divider-dot"></div></div>
+
 <!-- Work -->
 <section id="work">
   <div class="in">
@@ -462,51 +511,72 @@ footer .btt:hover{color:var(--text);}
     <h2 class="s-title r r2">Products I've shaped</h2>
     <div class="work-list" style="margin-top:32px;">
       <a href="https://linkedin.com/in/fansuriarrumi" target="_blank" class="work-item r r3">
-        <div class="wi-year">2024</div>
-        <div><div class="wi-title">Vessel & Port Operations Dashboard</div><div class="wi-company">PT. Cemindo Gemilang Tbk.</div></div>
-        <div><div class="wi-desc">Real-time vessel tracking dashboard easing port congestion through clear data visualization and operational insights.</div><div class="wi-tags"><span>Dashboard</span><span>Data Viz</span><span>PRD</span></div></div>
+        <div class="wi-vis"><img src="assets-v2/project-vessel.png" alt="" loading="lazy"></div>
+        <div>
+          <div class="wi-year">2024</div>
+          <div class="wi-title">Vessel & Port Operations Dashboard</div>
+          <div class="wi-company">PT. Cemindo Gemilang Tbk.</div>
+          <div class="wi-desc">Real-time vessel tracking dashboard easing port congestion through clear data visualization and operational insights.</div>
+          <div class="wi-tags"><span>Dashboard</span><span>Data Viz</span><span>PRD</span></div>
+        </div>
         <div class="wi-arrow">↗</div>
       </a>
       <a href="https://linkedin.com/in/fansuriarrumi" target="_blank" class="work-item r r4">
-        <div class="wi-year">2022</div>
-        <div><div class="wi-title">Plant Digitalization System</div><div class="wi-company">PT. Cemindo Gemilang Tbk.</div></div>
-        <div><div class="wi-desc">Replaced paper-based processes across multiple cement plants — reporting, warehousing, HSE, and equipment monitoring.</div><div class="wi-tags"><span>Enterprise</span><span>Mobile</span><span>UX Research</span></div></div>
+        <div class="wi-vis"><img src="assets-v2/project-plant.png" alt="" loading="lazy"></div>
+        <div>
+          <div class="wi-year">2022</div>
+          <div class="wi-title">Plant Digitalization System</div>
+          <div class="wi-company">PT. Cemindo Gemilang Tbk.</div>
+          <div class="wi-desc">Replaced paper-based processes across multiple cement plants — reporting, warehousing, HSE, and equipment monitoring.</div>
+          <div class="wi-tags"><span>Enterprise</span><span>Mobile</span><span>UX Research</span></div>
+        </div>
         <div class="wi-arrow">↗</div>
       </a>
       <a href="https://linkedin.com/in/fansuriarrumi" target="_blank" class="work-item r r5">
-        <div class="wi-year">2021</div>
-        <div><div class="wi-title">Logistics Platform Redesign</div><div class="wi-company">PT. Logkar Indonesia</div></div>
-        <div><div class="wi-desc">Connected drivers, shippers, and transporters across multiple delivery types into one streamlined, user-friendly platform.</div><div class="wi-tags"><span>SaaS</span><span>Web App</span><span>Figma</span></div></div>
+        <div class="wi-vis"><img src="assets-v2/project-logistics.png" alt="" loading="lazy"></div>
+        <div>
+          <div class="wi-year">2021</div>
+          <div class="wi-title">Logistics Platform Redesign</div>
+          <div class="wi-company">PT. Logkar Indonesia</div>
+          <div class="wi-desc">Connected drivers, shippers, and transporters across multiple delivery types into one streamlined, user-friendly platform.</div>
+          <div class="wi-tags"><span>SaaS</span><span>Web App</span><span>Figma</span></div>
+        </div>
         <div class="wi-arrow">↗</div>
       </a>
     </div>
   </div>
 </section>
 
+<!-- Section Divider -->
+<div class="section-divider"><img src="assets-v2/section-divider.png" alt="" aria-hidden="true"><div class="divider-line"></div><div class="divider-dot"></div></div>
+
 <!-- About -->
 <section id="about">
   <div class="in">
     <div class="s-label r r1">About</div>
-    <div class="about-grid">
+    <div class="about-layout">
       <div class="about-text">
         <h2 class="s-title r r2">Designer by choice, strategist by instinct</h2>
         <p class="r r3">I design tools that keep complex operations running. From logistics platforms connecting drivers, shippers, and transporters — to mobile apps that catch factory breakdowns before they happen — to vessel-tracking systems that ease port congestion. Messy data, manual forms, coordination chaos — I turn them into clear, trustworthy tools teams enjoy using.</p>
-        <div class="about-quote r r4">"I approach design like a ranked match — strategic, fast, and adaptive. Years of playing Dota 2 and Mobile Legends taught me to read patterns, stay calm in chaos, and always find the next move."</div>
+        <div class="quote-block r r4">"I approach design like a ranked match — strategic, fast, and adaptive. Years of playing Dota 2 and Mobile Legends taught me to read patterns, stay calm in chaos, and always find the next move."</div>
         <p class="r r5">I'm not a coding wizard or math genius — so I chose to master what bridges it all: digital product design. I thrive on understanding people, digging for insights, and turning messy problems into clear, useful solutions.</p>
-      </div>
-      <div class="about-vis">
-        <div class="r ri">
-          <img src="assets/hero-chaos.png" alt="Design process visualization" loading="lazy">
-        </div>
         <div class="about-stats r r3" style="margin-top:20px;">
-          <div class="about-stat"><div class="num">4+</div><div class="lbl">Years</div></div>
+          <div class="about-stat"><div class="num">4+</div><div class="lbl">Years Exp</div></div>
           <div class="about-stat"><div class="num">3</div><div class="lbl">Companies</div></div>
           <div class="about-stat"><div class="num">10+</div><div class="lbl">Products</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="about-image-wrap r ri">
+          <img src="assets-v2/about-divine-machine.png" alt="Human and machine design fusion" loading="lazy">
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- Section Divider -->
+<div class="section-divider"><img src="assets-v2/section-divider.png" alt="" aria-hidden="true"><div class="divider-line"></div><div class="divider-dot"></div></div>
 
 <!-- Experience -->
 <section id="exp">
@@ -530,6 +600,9 @@ footer .btt:hover{color:var(--text);}
   </div>
 </section>
 
+<!-- Section Divider -->
+<div class="section-divider"><img src="assets-v2/section-divider.png" alt="" aria-hidden="true"><div class="divider-line"></div><div class="divider-dot"></div></div>
+
 <!-- Skills -->
 <section id="skills">
   <div class="in">
@@ -543,8 +616,11 @@ footer .btt:hover{color:var(--text);}
   </div>
 </section>
 
-<!-- Education + Contact -->
-<section id="contact">
+<!-- Section Divider -->
+<div class="section-divider"><img src="assets-v2/section-divider.png" alt="" aria-hidden="true"><div class="divider-line"></div><div class="divider-dot"></div></div>
+
+<!-- Contact -->
+<section id="contact" class="contact-sec">
   <div class="in">
     <div class="s-label r r1">Contact & Education</div>
     <div class="contact-grid">
@@ -588,13 +664,12 @@ footer .btt:hover{color:var(--text);}
 </footer>
 
 <script>
-// ─── Theme Toggle ───
+// ─── Theme ───
 const themeBtn = document.getElementById('themeBtn');
 const html = document.documentElement;
 const saved = localStorage.getItem('portfolio-theme');
 if (saved) html.setAttribute('data-theme', saved);
 themeBtn.textContent = html.getAttribute('data-theme') === 'light' ? '☀️' : '🌙';
-
 themeBtn.addEventListener('click', () => {
   const cur = html.getAttribute('data-theme');
   const next = cur === 'dark' ? 'light' : 'dark';
@@ -603,38 +678,32 @@ themeBtn.addEventListener('click', () => {
   themeBtn.textContent = next === 'light' ? '☀️' : '🌙';
 });
 
-// ─── Custom Cursor ───
+// ─── Cursor ───
 const dot = document.getElementById('cDot');
 const ring = document.getElementById('cRing');
-let mx = 0, my = 0;
-
 document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  dot.style.left = mx + 'px'; dot.style.top = my + 'px';
-  ring.style.left = mx + 'px'; ring.style.top = my + 'px';
+  dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
+  ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px';
 });
-
-document.querySelectorAll('a, button, .work-item, .exp-card, .skill-item, .mono-frame, .contact-row').forEach(el => {
+document.querySelectorAll('a, button, .work-item, .exp-card, .skill-item, .hero-gear-frame, .contact-row').forEach(el => {
   el.addEventListener('mouseenter', () => ring.classList.add('hover'));
   el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
 });
 
 // ─── Nav scroll ───
 const nav = document.getElementById('nav');
-window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 40);
-});
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40));
 
 // ─── Nav section index ───
-const sections = ['#work', '#about', '#exp', '#skills', '#contact'];
+const sectionIds = ['#work', '#about', '#exp', '#skills', '#contact'];
 const navIdx = document.querySelector('.nav-index');
 window.addEventListener('scroll', () => {
   let i = 0;
-  sections.forEach((id, idx) => {
+  sectionIds.forEach((id, idx) => {
     const el = document.querySelector(id);
     if (el && el.getBoundingClientRect().top < window.innerHeight * 0.5) i = idx + 1;
   });
-  navIdx.textContent = String(i).padStart(2,'0') + '/' + String(sections.length).padStart(2,'0');
+  navIdx.textContent = String(i).padStart(2,'0') + '/' + String(sectionIds.length).padStart(2,'0');
 });
 
 // ─── Reveal Observer ───
@@ -642,17 +711,15 @@ const obs = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) {
       e.target.classList.add('v');
-      // Fill progress bars
       e.target.querySelectorAll('.bar span.fill').forEach(el => {
         el.style.width = el.style.getPropertyValue('--pct');
       });
     }
   });
 }, { threshold: .08, rootMargin: '0px 0px -40px 0px' });
-
 document.querySelectorAll('.r, .ri').forEach(el => obs.observe(el));
 
-// ─── Magnetic button effect ───
+// ─── Magnetic ───
 document.querySelectorAll('.btn, .work-item, .contact-row').forEach(el => {
   el.addEventListener('mousemove', e => {
     const r = el.getBoundingClientRect();
@@ -660,29 +727,34 @@ document.querySelectorAll('.btn, .work-item, .contact-row').forEach(el => {
     const y = (e.clientY - r.top - r.height/2) * 0.15;
     el.style.transform = `translate(${x}px, ${y}px)`;
   });
-  el.addEventListener('mouseleave', () => {
-    el.style.transform = '';
-  });
+  el.addEventListener('mouseleave', () => el.style.transform = '');
 });
 
-// ─── Image Parallax on hover ───
-document.querySelectorAll('.mono-frame img, .about-vis img').forEach(img => {
-  const wrap = img.parentElement;
+// ─── Image Parallax ───
+document.querySelectorAll('.mono-frame img, .about-image-wrap img').forEach(img => {
+  const wrap = img.closest('.mono-frame, .about-image-wrap') || img.parentElement;
   wrap.addEventListener('mousemove', e => {
     const r = wrap.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
     img.style.transform = `scale(1.04) translate(${x * -10}px, ${y * -10}px)`;
   });
-  wrap.addEventListener('mouseleave', () => {
-    img.style.transform = '';
-  });
+  wrap.addEventListener('mouseleave', () => { img.style.transform = ''; });
 });
 
-// ─── Character stagger for hero ───
-// (already done via CSS keyframes)
+// ─── Hero gear frame mouse parallax ───
+const gearFrame = document.querySelector('.hero-gear-frame');
+if (gearFrame) {
+  gearFrame.addEventListener('mousemove', e => {
+    const r = gearFrame.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    gearFrame.style.transform = `perspective(500px) rotateY(${x * 15}deg) rotateX(${y * -15}deg)`;
+  });
+  gearFrame.addEventListener('mouseleave', () => { gearFrame.style.transform = ''; });
+}
 
-console.log('UXSUR — portfolio loaded. Built with intent, not templates.');
+console.log('UXSUR — Built with intent, not templates.');
 </script>
 </body>
 </html>
