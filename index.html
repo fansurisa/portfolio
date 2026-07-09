@@ -10,14 +10,28 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important;}}
-:root{--font:'Inter',sans-serif}
+:root{--font:'Inter',sans-serif;--cursor-x:-100px;--cursor-y:-100px}
 [data-theme="dark"]{--bg:#050505;--bg2:#0d0d0d;--surface:#151515;--border:#1e1e1e;--text:#ececec;--muted:#7a7a7a;--dim:#3a3a3a;--accent:#ececec}
 [data-theme="light"]{--bg:#f5f5f3;--bg2:#ebebe9;--surface:#ffffff;--border:#d4d4d2;--text:#111111;--muted:#7a7a78;--dim:#aaaaa8;--accent:#111111}
 html{scrollbar-width:thin;background:var(--bg)}
-body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;cursor:none}
+
+/* ─── Custom Cursor ─── */
+#cursor{position:fixed;width:6px;height:6px;border-radius:50%;background:var(--text);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .25s,height .25s,background .25s,mix-blend-mode .25s;will-change:transform}
+#cursor.hover{width:36px;height:36px;background:transparent;border:1px solid var(--text);mix-blend-mode:difference}
+#cursorRing{position:fixed;width:28px;height:28px;border-radius:50%;border:.8px solid var(--muted);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .5s,height .5s,opacity .5s,border-color .5s;will-change:transform;opacity:.8}
+#cursorRing.hover{width:48px;height:48px;border-color:var(--text);opacity:1}
+@media(hover:none){#cursor,#cursorRing{display:none}body{cursor:auto}}
+
+/* ─── Page loader ─── */
+#loader{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity .8s,visibility .8s;pointer-events:none}
+#loader.hide{opacity:0;visibility:hidden}
+#loader .spinner{width:20px;height:20px;border:1px solid var(--border);border-top-color:var(--text);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* ─── Scroll Progress ─── */
 #progress{position:fixed;top:0;left:0;width:0;height:1px;background:var(--text);z-index:1000;transition:width .1s linear}
@@ -52,11 +66,19 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--text);outline-offse
 .hero-desc{font-size:.9rem;color:var(--muted);max-width:420px;line-height:1.7;margin:28px 0 36px;opacity:0;animation:fadeIn .8s .5s forwards}
 @keyframes fadeIn{to{opacity:1}}
 .hero-actions{display:flex;gap:10px;flex-wrap:wrap;opacity:0;animation:fadeIn .8s .7s forwards}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:4px;font-weight:500;font-size:.82rem;text-decoration:none;transition:all .25s;font-family:inherit;border:none;cursor:pointer;touch-action:manipulation}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:4px;font-weight:500;font-size:.82rem;text-decoration:none;transition:all .25s;font-family:inherit;border:none;cursor:none;touch-action:manipulation;position:relative;overflow:hidden}
 .btn-primary{background:var(--text);color:var(--bg)}
-.btn-primary:hover{opacity:.85;transform:translateY(-1px)}
+.btn-primary:hover{opacity:.85}
 .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
-.btn-ghost:hover{border-color:var(--text);transform:translateY(-1px)}
+.btn-ghost:hover{border-color:var(--text)}
+.btn .btn-follow{position:absolute;width:50px;height:50px;border-radius:50%;background:var(--text);opacity:0;transition:opacity .3s;pointer-events:none;left:var(--mx,0);top:var(--my,0);transform:translate(-50%,-50%) scale(0);mix-blend-mode:difference}
+
+/* ─── Hero marquee ─── */
+.hero-marquee{margin-top:24px;overflow:hidden;width:100%;opacity:0;animation:fadeIn .8s .9s forwards}
+.hero-marquee-track{display:flex;gap:24px;width:max-content;animation:marquee 28s linear infinite}
+.hero-marquee-track span{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim);white-space:nowrap;position:relative}
+.hero-marquee-track span::after{content:'·';margin-left:24px;color:var(--border)}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* ─── Parallax hero bg ─── */
 .hero-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
@@ -99,7 +121,7 @@ section .in{max-width:1050px;margin:0 auto}
 
 /* ─── Work ─── */
 .work-list{display:flex;flex-direction:column}
-.work-item{display:grid;grid-template-columns:80px 1fr 40px;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;cursor:pointer;align-items:center;transition:opacity .3s;touch-action:manipulation}
+.work-item{display:grid;grid-template-columns:80px 1fr 40px;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;cursor:none;align-items:center;transition:opacity .3s;touch-action:manipulation}
 .work-item:first-child{border-top:1px solid var(--border)}
 .work-item:hover{opacity:.5}
 .work-item .wi-year{font-size:.7rem;color:var(--dim);font-weight:500;letter-spacing:.5px}
@@ -110,6 +132,23 @@ section .in{max-width:1050px;margin:0 auto}
 .work-item .wi-tags span{font-size:.6rem;padding:2px 8px;border-radius:2px;background:var(--surface);border:1px solid var(--border);color:var(--muted)}
 .work-item .wi-arrow{font-size:1rem;color:var(--dim);transition:transform .3s;justify-self:end}
 .work-item:hover .wi-arrow{transform:translate(4px,-4px);color:var(--text)}
+
+/* ─── Horizontal Showcase ─── */
+.showcase{overflow:hidden;padding:0;background:var(--bg2);position:relative}
+.showcase-sticky{height:100vh;position:relative;display:flex;align-items:center;overflow:hidden}
+.showcase-track{display:flex;gap:40px;padding:0 80px;will-change:transform}
+.showcase-card{min-width:380px;max-width:460px;flex-shrink:0;border:1px solid var(--border);border-radius:6px;padding:36px 32px;background:var(--surface);position:relative;cursor:default}
+.showcase-card .sc-visual{width:100%;height:160px;background:var(--bg2);border-radius:4px;margin-bottom:20px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;position:relative;overflow:hidden}
+.showcase-card .sc-visual .sc-pattern{position:absolute;inset:0;opacity:.06;background-image:radial-gradient(circle at 25% 50%,var(--text) 1px,transparent 1px);background-size:18px 18px}
+.showcase-card .sc-year{font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim);font-weight:500}
+.showcase-card h3{font-size:1.1rem;font-weight:600;margin:6px 0 4px;letter-spacing:-.3px}
+.showcase-card .sc-company{font-size:.75rem;color:var(--muted);margin-bottom:10px}
+.showcase-card .sc-desc{font-size:.8rem;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.showcase-card .sc-tags{display:flex;gap:4px;flex-wrap:wrap}
+.showcase-card .sc-tags span{font-size:.55rem;padding:2px 8px;border-radius:2px;background:var(--bg);border:1px solid var(--border);color:var(--muted)}
+.showcase-card .sc-arrow{position:absolute;top:36px;right:32px;font-size:1rem;color:var(--dim);transition:transform .3s}
+.showcase-card:hover .sc-arrow{transform:translate(4px,-4px);color:var(--text)}
+.showcase-hint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim);opacity:.6;z-index:2}
 
 /* ─── About ─── */
 .about-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:50px;align-items:start}
@@ -181,6 +220,9 @@ footer .btt:hover{color:var(--text)}
   .work-item .wi-arrow{display:none}
   nav{padding:0 20px}
   .hero h1{letter-spacing:-1px}
+  .showcase-card{min-width:300px}
+  .showcase-track{padding:0 40px}
+  .showcase-sticky{height:auto;padding:80px 0}
 }
 @media(max-width:480px){
   .hero h1{font-size:2.4rem}
@@ -189,11 +231,16 @@ footer .btt:hover{color:var(--text)}
   .about-stats{grid-template-columns:1fr}
   .hero{padding:80px 20px 40px}
   section{padding:60px 20px}
+  .showcase-card{min-width:260px;padding:24px}
+  #cursor,#cursorRing{display:none}body{cursor:auto}
 }
 </style>
 </head>
 <body>
 
+<div id="loader"><div class="spinner"></div></div>
+<div id="cursor"></div>
+<div id="cursorRing"></div>
 <div id="progress"></div>
 
 <button id="themeBtn" aria-label="Toggle theme">🌙</button>
@@ -202,6 +249,7 @@ footer .btt:hover{color:var(--text)}
   <a href="#" class="nav-logo">F<span>.</span>S<span>.</span>A</a>
   <div class="nav-right">
     <a href="#work">Work</a>
+    <a href="#showcase">Showcase</a>
     <a href="#about">About</a>
     <a href="#exp">Exp</a>
     <a href="#skills">Skills</a>
@@ -232,6 +280,11 @@ footer .btt:hover{color:var(--text)}
     <div class="hero-actions">
       <a href="#work" class="btn btn-primary">See work</a>
       <a href="https://linkedin.com/in/fansuriarrumi" target="_blank" class="btn btn-ghost">LinkedIn ↗</a>
+    </div>
+    <div class="hero-marquee">
+      <div class="hero-marquee-track">
+        <span>UX Design</span><span>Enterprise SaaS</span><span>Design Systems</span><span>Product Strategy</span><span>Mobile Apps</span><span>User Research</span><span>Interaction Design</span><span>Figma</span><span>UX Design</span><span>Enterprise SaaS</span><span>Design Systems</span><span>Product Strategy</span><span>Mobile Apps</span><span>User Research</span><span>Interaction Design</span><span>Figma</span>
+      </div>
     </div>
   </div>
   <div class="scroll-hint"><span></span><small>Scroll</small></div>
@@ -284,6 +337,63 @@ footer .btt:hover{color:var(--text)}
         <div class="wi-arrow">↗</div>
       </a>
     </div>
+  </div>
+</section>
+
+<!-- ─── HORIZONTAL SHOWCASE ─── -->
+<section id="showcase" class="showcase">
+  <div class="showcase-sticky" id="showcaseSticky">
+    <div class="in" style="position:absolute;top:32px;left:50%;transform:translateX(-50%);width:100%;z-index:3;max-width:1050px">
+      <div class="s-label" style="margin-bottom:16px;color:var(--muted)">Showcase</div>
+    </div>
+    <div class="showcase-track" id="showcaseTrack">
+      <div class="showcase-card">
+        <div class="sc-visual"><div class="sc-pattern"></div>🚢</div>
+        <div class="sc-year">2024 · Vessel Operations</div>
+        <h3>Port Congestion → Real-time</h3>
+        <div class="sc-company">PT. Cemindo Gemilang Tbk.</div>
+        <div class="sc-desc">Replaced manual spreadsheets with a live vessel tracking dashboard. Port managers get instant visibility into berth schedules, cargo status, and ETA changes.</div>
+        <div class="sc-tags"><span>Dashboard</span><span>Data Viz</span><span>Field Research</span></div>
+        <div class="sc-arrow">↗</div>
+      </div>
+      <div class="showcase-card">
+        <div class="sc-visual"><div class="sc-pattern"></div>🏭</div>
+        <div class="sc-year">2022 · Plant Digitalization</div>
+        <h3>Paper → Mobile-first</h3>
+        <div class="sc-company">PT. Cemindo Gemilang Tbk.</div>
+        <div class="sc-desc">Digitized paper-based workflows across 6 cement plants. Operators shifted from clipboards to mobile devices for reporting, HSE, and equipment monitoring.</div>
+        <div class="sc-tags"><span>Mobile</span><span>UX Research</span><span>Design System</span></div>
+        <div class="sc-arrow">↗</div>
+      </div>
+      <div class="showcase-card">
+        <div class="sc-visual"><div class="sc-pattern"></div>📦</div>
+        <div class="sc-year">2021 · Logistics Platform</div>
+        <h3>3-sided Marketplace</h3>
+        <div class="sc-company">PT. Logkar Indonesia</div>
+        <div class="sc-desc">Designed a unified platform for drivers, shippers, and transporters. Handled FTL, LTL, and parcel delivery in a single end-to-end experience.</div>
+        <div class="sc-tags"><span>SaaS</span><span>Multi-platform</span><span>Usability Tests</span></div>
+        <div class="sc-arrow">↗</div>
+      </div>
+      <div class="showcase-card">
+        <div class="sc-visual"><div class="sc-pattern"></div>📱</div>
+        <div class="sc-year">2025 · Side Project</div>
+        <h3>Niyyah — Habit Tracker</h3>
+        <div class="sc-company">Personal Project</div>
+        <div class="sc-desc">Designed and built a clean habit tracking app from concept to Play Store. Full UX cycle: research, wireframes, UI, Flutter dev, and deployment.</div>
+        <div class="sc-tags"><span>Flutter</span><span>Play Store</span><span>End-to-end</span></div>
+        <div class="sc-arrow">↗</div>
+      </div>
+      <div class="showcase-card">
+        <div class="sc-visual"><div class="sc-pattern"></div>🎨</div>
+        <div class="sc-year">2022 · Design System</div>
+        <h3>200+ Component Library</h3>
+        <div class="sc-company">PT. Cemindo Gemilang Tbk.</div>
+        <div class="sc-desc">Built and maintained a Figma design system with 200+ components, adopted by 10 product teams. Reduced design-to-dev handoff time significantly.</div>
+        <div class="sc-tags"><span>Design Systems</span><span>Figma</span><span>Scalability</span></div>
+        <div class="sc-arrow">↗</div>
+      </div>
+    </div>
+    <div class="showcase-hint">← Drag to explore →</div>
   </div>
 </section>
 
@@ -404,6 +514,53 @@ footer .btt:hover{color:var(--text)}
 </footer>
 
 <script>
+// ─── Lenis Smooth Scroll ───
+const lenis = new Lenis({
+  duration: 1.2,
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  orientation: 'vertical',
+  gestureOrientation: 'vertical',
+  smoothWheel: true,
+  smoothTouch: false,
+  touchMultiplier: 2,
+});
+function raf(time) {
+  lenis.raf(time);
+  requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
+
+// ─── Custom Cursor ───
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursorRing');
+let cx = -100, cy = -100;
+document.addEventListener('mousemove', e => {
+  cx = e.clientX;
+  cy = e.clientY;
+  cursor.style.transform = `translate(${cx}px,${cy}px)`;
+  cursorRing.style.transform = `translate(${cx}px,${cy}px)`;
+});
+// Hover targets
+document.querySelectorAll('a, button, .btn, .work-item, .stagger-card').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); cursorRing.classList.add('hover'); });
+  el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); cursorRing.classList.remove('hover'); });
+});
+document.addEventListener('mouseleave', () => {
+  cursor.style.opacity = '0';
+  cursorRing.style.opacity = '0';
+});
+document.addEventListener('mouseenter', () => {
+  cursor.style.opacity = '1';
+  cursorRing.style.opacity = '.8';
+});
+
+// ─── Page Loader ───
+const loader = document.getElementById('loader');
+window.addEventListener('load', () => {
+  setTimeout(() => loader.classList.add('hide'), 400);
+  setTimeout(() => loader.remove(), 1400);
+});
+
 // ─── Theme ───
 const themeBtn = document.getElementById('themeBtn');
 const html = document.documentElement;
@@ -435,11 +592,9 @@ const io = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) {
       e.target.classList.add('v');
-      // Animate skill bars inside revealed section
       e.target.querySelectorAll('.bar span.fill').forEach(el => {
         el.style.width = el.style.getPropertyValue('--pct');
       });
-      // Split-text animation for .split-target inside revealed element
       const split = e.target.querySelector('.split-target');
       if (split && !split.dataset.split) {
         split.dataset.split = '1';
@@ -454,22 +609,21 @@ const io = new IntersectionObserver(entries => {
 }, { threshold: .08, rootMargin: '0px 0px -60px 0px' });
 document.querySelectorAll('.r').forEach(el => io.observe(el));
 
-// ─── Hero parallax (scroll-driven) ───
+// ─── Hero parallax ───
 const heroBg = document.getElementById('parallaxBg');
 if (heroBg) {
   const dots = heroBg.querySelectorAll('.hero-bg-dot, .hero-bg-line');
   window.addEventListener('scroll', () => {
     const rect = heroBg.getBoundingClientRect();
-    const progress = Math.max(0, Math.min(1, -rect.top / (rect.height + window.innerHeight)));
+    const p = Math.max(0, Math.min(1, -rect.top / (rect.height + window.innerHeight)));
     dots.forEach((dot, i) => {
       const speed = 0.3 + (i * 0.08);
-      const y = progress * 60 * speed;
-      dot.style.transform = `translateY(${y}px)`;
+      dot.style.transform = `translateY(${p * 60 * speed}px)`;
     });
   }, {passive:true});
 }
 
-// ─── Stagger card hover 3D tilt ───
+// ─── Stagger card 3D tilt ───
 document.querySelectorAll('.stagger-card').forEach(card => {
   card.addEventListener('mousemove', e => {
     const r = card.getBoundingClientRect();
@@ -477,9 +631,7 @@ document.querySelectorAll('.stagger-card').forEach(card => {
     const y = (e.clientY - r.top) / r.height - 0.5;
     card.style.transform = `perspective(800px) rotateY(${x * 4}deg) rotateX(${y * -3}deg) translateZ(10px)`;
   });
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = '';
-  });
+  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
 });
 
 // ─── Scroll divider glow ───
@@ -496,6 +648,96 @@ if (dividerGlow) {
     }
   }, {passive:true});
 }
+
+// ─── Horizontal Scroll Showcase ───
+const track = document.getElementById('showcaseTrack');
+const sticky = document.getElementById('showcaseSticky');
+if (track && sticky) {
+  let isDragging = false;
+  let startX, scrollLeft;
+  let autoScroll = true;
+  let autoScrollId = null;
+
+  // Mouse drag
+  track.addEventListener('mousedown', e => {
+    isDragging = true;
+    startX = e.pageX - track.offsetLeft;
+    scrollLeft = track.scrollLeft;
+    track.style.cursor = 'grabbing';
+    autoScroll = false;
+    if (autoScrollId) { cancelAnimationFrame(autoScrollId); autoScrollId = null; }
+  });
+  track.addEventListener('mouseleave', () => {
+    if (isDragging) {
+      isDragging = false;
+      track.style.cursor = 'grab';
+      startAutoScroll();
+    }
+  });
+  track.addEventListener('mouseup', () => {
+    isDragging = false;
+    track.style.cursor = 'grab';
+    startAutoScroll();
+  });
+  track.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - track.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    track.scrollLeft = scrollLeft - walk;
+  });
+
+  // Also wheel-scroll within horizontal section
+  sticky.addEventListener('wheel', e => {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      const target = track.scrollLeft + e.deltaY;
+      if (target >= 0 && target <= maxScroll) {
+        track.scrollLeft = target;
+        e.preventDefault();
+      }
+    }
+  }, {passive: false});
+
+  // Auto-scroll
+  function startAutoScroll() {
+    autoScroll = true;
+    let speed = 0.5;
+    function step() {
+      if (!autoScroll) return;
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      track.scrollLeft += speed;
+      if (track.scrollLeft >= maxScroll) {
+        track.scrollLeft = 0;
+      }
+      autoScrollId = requestAnimationFrame(step);
+    }
+    autoScrollId = requestAnimationFrame(step);
+  }
+  startAutoScroll();
+
+  // Pause on hover
+  track.addEventListener('mouseenter', () => {
+    autoScroll = false;
+    if (autoScrollId) { cancelAnimationFrame(autoScrollId); autoScrollId = null; }
+  });
+  track.addEventListener('mouseleave', () => {
+    if (!isDragging) startAutoScroll();
+  });
+}
+
+// ─── Magnetic button effect ───
+document.querySelectorAll('.btn').forEach(btn => {
+  btn.addEventListener('mousemove', e => {
+    const r = btn.getBoundingClientRect();
+    const x = e.clientX - r.left - r.width / 2;
+    const y = e.clientY - r.top - r.height / 2;
+    btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = '';
+  });
+});
 
 console.log('F.S.A — Built with intent.');
 </script>
